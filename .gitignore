@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+venv/
+.env
+.DS_Store
+
+# Tailwind build tooling — compiled CSS is committed, tooling is not
+node_modules/
+src/
+tailwind.config.js
+package.json
+package-lock.json
