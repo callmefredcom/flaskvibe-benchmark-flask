@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+
+<!-- KPI Cards — 4 queries, raw SQL, no ORM -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+        <p class="text-sm text-gray-500">Total Projects</p>
+        <p class="text-3xl font-bold text-gray-900">{{ total }}</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+        <p class="text-sm text-gray-500">Active</p>
+        <p class="text-3xl font-bold text-green-600">{{ active }}</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+        <p class="text-sm text-gray-500">Completed</p>
+        <p class="text-3xl font-bold text-blue-600">{{ done }}</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+        <p class="text-sm text-gray-500">Total Budget</p>
+        <p class="text-3xl font-bold text-gray-900">${{ "{:,.0f}".format(budget) }}</p>
+    </div>
+</div>
+
+<!-- Recent Projects -->
+<div class="bg-white border border-gray-200 rounded-lg">
+    <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h2 class="font-semibold">Recent Projects</h2>
+        <a href="/projects" class="text-sm text-blue-600 hover:underline">View all →</a>
+    </div>
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+            <tr>
+                <th class="px-4 py-3 text-left">Title</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-left">Budget</th>
+                <th class="px-4 py-3 text-left">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in recent %}
+            <tr class="border-t border-gray-100 hover:bg-gray-50">
+                <td class="px-4 py-3">
+                    <a href="/projects/{{ p.id }}" class="text-blue-600 hover:underline">{{ p.title }}</a>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="px-2 py-1 rounded text-xs font-medium
+                        {% if p.status == 'active' %}bg-green-100 text-green-700
+                        {% elif p.status == 'completed' %}bg-blue-100 text-blue-700
+                        {% else %}bg-gray-100 text-gray-700{% endif %}">
+                        {{ p.status }}
+                    </span>
+                </td>
+                <td class="px-4 py-3">${{ "{:,.0f}".format(p.budget or 0) }}</td>
+                <td class="px-4 py-3 text-gray-500">{{ p.created_at.strftime('%b %d, %Y') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %} — BenchmarkApp (Flask)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+        <a href="/dashboard" class="font-bold text-blue-600">
+            BenchmarkApp <span class="text-gray-400 text-sm font-normal">(Flask)</span>
+        </a>
+        <div class="flex gap-4 text-sm">
+            <a href="/dashboard" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+            <a href="/projects" class="text-gray-600 hover:text-blue-600">Projects</a>
+            {% if session.user_id %}
+                <a href="/logout" class="text-gray-600 hover:text-red-500">Logout</a>
+            {% else %}
+                <a href="/login" class="text-blue-600 font-medium">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 text-sm">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Projects{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Projects <span class="text-gray-400 text-lg font-normal">({{ total }})</span></h1>
+    <a href="/projects/new" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">
+        + New Project
+    </a>
+</div>
+
+<form class="mb-4" method="GET">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search projects…"
+        class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-80">
+    <button type="submit" class="ml-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200">Search</button>
+    {% if q %}<a href="/projects" class="ml-2 text-sm text-gray-500 hover:text-red-500">Clear</a>{% endif %}
+</form>
+
+<div class="bg-white border border-gray-200 rounded-lg">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+            <tr>
+                <th class="px-4 py-3 text-left">Title</th>
+                <th class="px-4 py-3 text-left">Status</th>
+                <th class="px-4 py-3 text-left">Budget</th>
+                <th class="px-4 py-3 text-left">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rows %}
+            <tr class="border-t border-gray-100 hover:bg-gray-50">
+                <td class="px-4 py-3">
+                    <a href="/projects/{{ r.id }}" class="text-blue-600 hover:underline">{{ r.title }}</a>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="px-2 py-1 rounded text-xs font-medium
+                        {% if r.status == 'active' %}bg-green-100 text-green-700
+                        {% elif r.status == 'completed' %}bg-blue-100 text-blue-700
+                        {% else %}bg-gray-100 text-gray-700{% endif %}">
+                        {{ r.status }}
+                    </span>
+                </td>
+                <td class="px-4 py-3">${{ "{:,.0f}".format(r.budget or 0) }}</td>
+                <td class="px-4 py-3 text-gray-500">{{ r.created_at.strftime('%b %d, %Y') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if pages > 1 %}
+<div class="mt-4 flex gap-2 text-sm">
+    {% if page > 1 %}
+        <a href="?page={{ page - 1 }}&q={{ q }}" class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100">← Prev</a>
+    {% endif %}
+    <span class="px-3 py-1 text-gray-500">Page {{ page }} / {{ pages }}</span>
+    {% if page < pages %}
+        <a href="?page={{ page + 1 }}&q={{ q }}" class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100">Next →</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
